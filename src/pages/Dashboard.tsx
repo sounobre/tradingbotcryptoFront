@@ -18,7 +18,8 @@ type BacktestResult = {
     profitFactor: number
     trades: number
   }
-  trades: { time: string; type: 'BUY' | 'SELL' }[]
+  equity: { time: string; value: number }[]
+  trades: { time: string; type: 'BUY' | 'SELL'; price: number }[]
 }
 
 type FormValues = {
@@ -28,6 +29,11 @@ type FormValues = {
   strategy: string
   fast: number
   slow: number
+  signal: number
+  rsi: number
+  bb: number
+  initialCapital: number
+  positionSize: number
 }
 
 export default function Dashboard() {
@@ -45,6 +51,11 @@ export default function Dashboard() {
       strategy: 'ema_cross',
       fast: 9,
       slow: 21,
+      signal: 9,
+      rsi: 14,
+      bb: 20,
+      initialCapital: 10000,
+      positionSize: 1,
     },
   })
 
@@ -88,9 +99,15 @@ export default function Dashboard() {
       body: JSON.stringify({
         symbol: values.symbol,
         interval: values.interval,
+        limit: Number(values.limit),
         strategy: values.strategy,
         fast: Number(values.fast),
         slow: Number(values.slow),
+        signal: Number(values.signal),
+        rsi: Number(values.rsi),
+        bb: Number(values.bb),
+        initialCapital: Number(values.initialCapital),
+        positionSize: Number(values.positionSize),
       }),
     })
     setResult(res)
@@ -137,6 +154,31 @@ export default function Dashboard() {
             placeholder="slow"
             {...register('slow', { valueAsNumber: true })}
           />
+          <Input
+            type="number"
+            placeholder="signal"
+            {...register('signal', { valueAsNumber: true })}
+          />
+          <Input
+            type="number"
+            placeholder="rsi"
+            {...register('rsi', { valueAsNumber: true })}
+          />
+          <Input
+            type="number"
+            placeholder="bb"
+            {...register('bb', { valueAsNumber: true })}
+          />
+          <Input
+            type="number"
+            placeholder="capital"
+            {...register('initialCapital', { valueAsNumber: true })}
+          />
+          <Input
+            type="number"
+            placeholder="size"
+            {...register('positionSize', { valueAsNumber: true })}
+          />
           <Button type="submit">1) Ingerir &amp; Carregar</Button>
         </form>
       </Card>
@@ -177,6 +219,7 @@ export default function Dashboard() {
           trades={result?.trades?.map((t) => ({
             time: t.time,
             type: t.type,
+            price: t.price,
           }))}
         />
       </Card>

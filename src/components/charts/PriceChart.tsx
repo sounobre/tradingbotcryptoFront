@@ -4,7 +4,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceD
 type Candle = { openTime: string; close: number }
 
 
-type Trade = { time: string; type: 'BUY'|'SELL' }
+type Trade = { time: string; type: 'BUY'|'SELL'; price: number }
 
 
 export default function PriceChart({ candles, trades }:{ candles: Candle[]; trades?: Trade[] }){
@@ -17,7 +17,7 @@ return (
 <Tooltip />
 <Line type="monotone" dataKey="close" dot={false} />
 {trades?.map((t,i)=> (
-<ReferenceDot key={i} x={t.time} y={candles.find(c=>c.openTime===t.time)?.close} r={4} label={t.type==='BUY'?'B':'S'} />
+<ReferenceDot key={i} x={t.time} y={t.price} r={4} label={t.type==='BUY'?'B':'S'} />
 ))}
 </LineChart>
 </ResponsiveContainer>
