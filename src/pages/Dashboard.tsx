@@ -57,21 +57,28 @@ export default function Dashboard() {
   const [result, setResult] = useState<BacktestResult | null>(null)
 
   async function ingestAndLoad(values: FormValues) {
-    await api('/ingest', {
-      method: 'POST',
-      body: JSON.stringify({
-        symbol: values.symbol,
-        interval: values.interval,
-        limit: Number(values.limit),
-      }),
-    })
+    try {
+      await api('/ingest', {
+        method: 'POST',
+        body: JSON.stringify({
+          symbol: values.symbol,
+          interval: values.interval,
+          limit: Number(values.limit),
+        }),
+      })
+    } catch (err) {
+      console.error('Falha ao ingerir dados', err)
+    }
 
-    const data = await api<Candle[]>(
-      `/candles?symbol=${values.symbol}&interval=${values.interval}&limit=${values.limit}`,
-    )
-
-    setCandles(data)
-    setResult(null)
+    try {
+      const data = await api<Candle[]>(
+        `/candles?symbol=${values.symbol}&interval=${values.interval}&limit=${values.limit}`,
+      )
+      setCandles(data)
+      setResult(null)
+    } catch (err) {
+      console.error('Falha ao carregar candles', err)
+    }
   }
 
   async function runBacktest() {
