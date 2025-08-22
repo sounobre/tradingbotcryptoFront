@@ -83,7 +83,7 @@ export default function Dashboard() {
 
   async function runBacktest() {
     const values = getValues()
-    const res = await api<BacktestResult>('/backtest', {
+    const res = await api<BacktestResult>('/backtests', {
       method: 'POST',
       body: JSON.stringify({
         symbol: values.symbol,
